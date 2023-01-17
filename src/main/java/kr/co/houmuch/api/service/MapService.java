@@ -1,12 +1,15 @@
 package kr.co.houmuch.api.service;
 
+import kr.co.houmuch.api.domain.dto.map.AreaCodeDto;
 import kr.co.houmuch.core.domain.code.AreaCodeJpaRepository;
+import kr.co.houmuch.core.domain.code.AreaCodeJpo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +22,8 @@ public class MapService {
         int sgg = 0;
         int umd = 0;
 
-        List<?> areaList = areaCodeJpaRepository.findByCodeSidoAndCodeSggAndCodeUmd(sido, sgg, umd, pageable).getContent();
+
+        //List<?> areaList = areaCodeJpaRepository.findByCodeSidoAndCodeSggAndCodeUmd(sido, sgg, umd, pageable).getContent();
 
         System.out.println("----------findSido----------");
         System.out.println(areaCodeJpaRepository.findSido(pageable).getContent());
@@ -40,11 +44,13 @@ public class MapService {
         });
 
         System.out.println("----------2222----------");
-        System.out.println("areaList---->" + areaList);
+        //System.out.println("areaList---->" + areaList);
         System.out.println("----------2222----------");
 
 //        System.out.println("리스트에 값을 꺼내보자!----->" + areaList.get(0));  // 에러남
 
+        List<AreaCodeJpo> findSido = areaCodeJpaRepository.findSido(pageable).getContent();
+        List<AreaCodeDto> areaList = findSido.stream().map(AreaCodeDto::entityOf).collect(Collectors.toList());
         return areaList;
     }
 }
