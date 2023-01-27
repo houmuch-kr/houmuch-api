@@ -1,10 +1,11 @@
 package kr.co.houmuch.api.domain.dto.map;
 
+import kr.co.houmuch.core.domain.building.dto.Building;
+import kr.co.houmuch.core.domain.building.jpa.BuildingJpo;
+import kr.co.houmuch.core.domain.code.AreaCodeJpo;
 import kr.co.houmuch.core.domain.common.dto.CombinedAreaCode;
 import kr.co.houmuch.core.domain.common.dto.Coordinate;
-import kr.co.houmuch.core.domain.contract.ContractType;
 import kr.co.houmuch.core.domain.contract.dto.Contract;
-import kr.co.houmuch.core.domain.contract.jpa.ContractJpo;
 import lombok.*;
 
 
@@ -15,7 +16,7 @@ import lombok.*;
 @ToString
 public class AreaContract {
     private Long id;
-    private ContractType type;
+    private int type;
     private String address;
     private String shortAddress;
     private String fullAddress;
@@ -23,102 +24,53 @@ public class AreaContract {
     private CombinedAreaCode code;
     private Contract contract;
 
-
-//    private Coordinate coordinate;
-
-
 // 엔티티(JPO)를 Dto로 변경하기 위해 만듦
-    public static AreaContract entityOf(ContractJpo contractJpo) {
-//        Optional<AreaCodeJpo> areaCodeO = Optional.of(new AreaCodeJpo());
-//        Optional<Coordinate> coordinateO = Optional.of(new Coordinate(0L, 0L));
-
-//                Coordinate.of(
-//                contractJpo.getAreaCode().getCoordinate().getCoordinate().getLatitude(),
-//                contractJpo.getAreaCode().getCoordinate().getCoordinate().getLongitude()));
-
-//        if(contractJpo.getAreaCode() == null){
-//            System.out.println("AreaCode가 null임!!!!!!!!!");
-//            return null;
-//        }
-//        if(contractJpo.getAreaCode().getCoordinate().getCoordinate() == null){
-//            System.out.println("coorinate이 null임!!!!!!!!!!!!");
-//            return null;
-//        }
-
-        System.out.println("00000----->" + contractJpo.getBuilding().getAreaCode());
-        System.out.println("id----->" + contractJpo.getBuilding().getAreaCode().getId());
+    public static AreaContract entityOf(AreaCodeJpo areaCodeJpo) {
+        System.out.println("areaCodeJpo----->" + areaCodeJpo);
+        System.out.println("id----->" + areaCodeJpo.getId());
 
         AreaContractBuilder builder = builder();
-        if(contractJpo.getBuilding().getAreaCode() != null){
+        if(areaCodeJpo != null){
             builder
-                    .id(contractJpo.getBuilding().getAreaCode().getId())
-                    .type(contractJpo.getType())
-                    .address(contractJpo.getBuilding().getAreaCode().getAddress())
-                    .shortAddress(contractJpo.getBuilding().getAreaCode().getShortAddress())
-                    .fullAddress(contractJpo.getBuilding().getAreaCode().getFullAddress());
+                    .id(areaCodeJpo.getId())
+                    .type(areaCodeJpo.getType())
+                    .address(areaCodeJpo.getAddress())
+                    .shortAddress(areaCodeJpo.getShortAddress())
+                    .fullAddress(areaCodeJpo.getFullAddress());
+
+			System.out.println("1111 builder----->" + builder);
+
+			if(areaCodeJpo.getCoordinate() != null){
+				builder
+						.coordinate(Coordinate.of(
+								areaCodeJpo.getCoordinate().getCoordinate().getLatitude(),
+								areaCodeJpo.getCoordinate().getCoordinate().getLongitude()));
+			}
+
+			System.out.println("2222 builder----->" + builder);
+
+			if(areaCodeJpo.getCode() != null){
+				builder
+						.code(CombinedAreaCode.of(
+								areaCodeJpo.getCode().getSido()
+								,areaCodeJpo.getCode().getSgg()
+								,areaCodeJpo.getCode().getUmd()));
+			}
+
+			System.out.println("3333 builder----->" + builder);
+
+			if(Contract.builder().build() != null){
+				builder
+						.contract(Contract.builder().build());
+			}
+
+			System.out.println("4444 builder----->" + builder);
+
         }
 
-        System.out.println("1111 builder----->" + builder);
-        System.out.println("");
-
-        if(contractJpo.getBuilding().getAreaCode().getCoordinate() != null){
-            builder
-                    .coordinate(Coordinate.of(
-                            contractJpo.getBuilding().getAreaCode().getCoordinate().getCoordinate().getLatitude(),
-                            contractJpo.getBuilding().getAreaCode().getCoordinate().getCoordinate().getLongitude()));
-        }
-
-        System.out.println("2222 builder----->" + builder);
-
-        if(contractJpo.getBuilding().getAreaCode().getCode() != null){
-            builder
-                    .code(CombinedAreaCode.of(
-                            contractJpo.getBuilding().getAreaCode().getCode().getSido()
-                            ,contractJpo.getBuilding().getAreaCode().getCode().getSgg()
-                            ,contractJpo.getBuilding().getAreaCode().getCode().getUmd()));
-        }
-
-        System.out.println("3333 builder----->" + builder);
-
-        if(contractJpo != null){
-            builder
-                    .contract(Contract.of(
-                                     contractJpo.getId()
-                                    , contractJpo.getType()
-                                    , contractJpo.getBuilding().getType()
-                                    , contractJpo.getBuilding().getAreaCode().getId()
-                                    , contractJpo.getContractedAt()
-                                    , contractJpo.getSerialNumber()
-                                    , contractJpo.getBuilding().getName()));
-        }
-
-        System.out.println("완성된 builder----->" + builder);
+        System.out.println("완성된 builder----->" + builder.build());
 
         return builder.build();
-
-//        return builder()
-//                .id(contractJpo.getAreaCode().getId())
-//                .type(contractJpo.getType())
-//                .address(contractJpo.getAreaCode().getAddress())
-//                .shortAddress(contractJpo.getAreaCode().getShortAddress())
-//                .fullAddress(contractJpo.getAreaCode().getFullAddress())
-//                .coordinate(Coordinate.of(
-//                        contractJpo.getAreaCode().getCoordinate().getCoordinate().getLatitude(),
-//                        contractJpo.getAreaCode().getCoordinate().getCoordinate().getLongitude()))
-//                .code(CombinedAreaCode.builder()
-//                        .sido(contractJpo.getAreaCode().getCode().getSido())
-//                        .sgg(contractJpo.getAreaCode().getCode().getSgg())
-//                        .umd(contractJpo.getAreaCode().getCode().getUmd())
-//                        .build())
-//                .contract(Contract.builder()
-//                        .id(contractJpo.getId())
-//                        .type(contractJpo.getType())
-//                        .buildingType(contractJpo.getBuildingType())
-//                        .contractedAt(contractJpo.getContractedAt())
-//                        .serialNumber(contractJpo.getSerialNumber())
-//                        .name(contractJpo.getName())
-//                        .build())
-//                .build();
     }
 }
 /* 원하는 형태
