@@ -66,6 +66,17 @@ public class AreaContract {
 
 			System.out.println("4444 builder----->" + builder);
 
+        if(contractJpo != null){
+            builder
+                    .contract(Contract.builder()
+                            .id(contractJpo.getId())
+                            .type(contractJpo.getType())
+                            .buildingType(contractJpo.getBuilding().getType())
+                            .areaCode(contractJpo.getBuilding().getAreaCode().getId())
+                            .contractedAt(contractJpo.getContractedAt())
+                            .serialNumber(contractJpo.getSerialNumber())
+                            .name(contractJpo.getBuilding().getName())
+                            .build());
         }
 
         System.out.println("완성된 builder----->" + builder.build());
