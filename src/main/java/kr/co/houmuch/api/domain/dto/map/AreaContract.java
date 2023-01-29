@@ -82,14 +82,15 @@ public class AreaContract {
 
         if(contractJpo != null){
             builder
-                    .contract(Contract.of(
-                                     contractJpo.getId()
-                                    , contractJpo.getType()
-                                    , contractJpo.getBuilding().getType()
-                                    , contractJpo.getBuilding().getAreaCode().getId()
-                                    , contractJpo.getContractedAt()
-                                    , contractJpo.getSerialNumber()
-                                    , contractJpo.getBuilding().getName()));
+                    .contract(Contract.builder()
+                            .id(contractJpo.getId())
+                            .type(contractJpo.getType())
+                            .buildingType(contractJpo.getBuilding().getType())
+                            .areaCode(contractJpo.getBuilding().getAreaCode().getId())
+                            .contractedAt(contractJpo.getContractedAt())
+                            .serialNumber(contractJpo.getSerialNumber())
+                            .name(contractJpo.getBuilding().getName())
+                            .build());
         }
 
         System.out.println("완성된 builder----->" + builder);
