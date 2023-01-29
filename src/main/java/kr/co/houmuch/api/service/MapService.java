@@ -2,12 +2,14 @@ package kr.co.houmuch.api.service;
 
 import kr.co.houmuch.api.domain.dto.map.AreaContract;
 import kr.co.houmuch.core.domain.code.AreaCodeJpaRepository;
+import kr.co.houmuch.core.domain.code.AreaCodeJpo;
 import kr.co.houmuch.core.domain.contract.jpa.ContractJpaRepository;
 import kr.co.houmuch.core.domain.contract.jpa.ContractJpo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,46 +17,34 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MapService {
     private final AreaCodeJpaRepository areaCodeJpaRepository;
-    private final ContractJpaRepository contractJpaRepository;
-//    private ContractJpo contractJpo;
-//    private AreaCodeJpo areaCodeJpo;
-    public List<?> fetchAsync(int type){
-        PageRequest pageable = PageRequest.of(0,10);
-        // 초기화 해주는 것이 맞는가?
-        int sido = 0;
-        int sgg = 0;
-        int umd = 0;
+    public List<AreaContract> fetchList(int type){
+        PageRequest pageable = PageRequest.of(0,30);
 
+		List<Integer> sidoList = areaCodeJpaRepository
+				.findSido(pageable)
+				.stream()
+				.map(areaCodeJpo -> areaCodeJpo.getCode().getSido())
+				.collect(Collectors.toList());
+		System.out.println("sidoList---->" + sidoList);
 
-        //List<?> areaList = areaCodeJpaRepository.findByCodeSidoAndCodeSggAndCodeUmd(sido, sgg, umd, pageable).getContent();
+		List<Integer> sggList = areaCodeJpaRepository
+				.findSgg(pageable)
+				.stream()
+				.map(areaCodeJpo -> areaCodeJpo.getCode().getSgg())
+				.collect(Collectors.toList());
+		System.out.println("sggList---->" + sggList);
 
-        System.out.println("----------findSido----------");
-        System.out.println(areaCodeJpaRepository.findSido(pageable).getContent());
-        System.out.println("----------findSido----------");
+		List<AreaCodeJpo> findList = new ArrayList<>();
 
-        System.out.println("----------findSgg----------");
-        System.out.println(areaCodeJpaRepository.findSgg(pageable).getContent());
-        System.out.println("----------findSgg----------");
+		for(int sidoInt : sidoList){
+			System.out.println("sidoInt--->" + sidoInt);
+			for(int sggInt : sggList){
+				findList.addAll(areaCodeJpaRepository.findByCodeSidoAndCodeSgg(sidoInt, sggInt, pageable).getContent());
+				System.out.println("뭐나올랑가?----->" + findList);
+			}
+		}
 
-        System.out.println("----------findUmd----------");
-        System.out.println(areaCodeJpaRepository.findUmd(pageable).getContent());
-        System.out.println("----------findUmd----------");
-        areaCodeJpaRepository.findUmd(pageable).getContent().forEach(areaCodeJpo -> {
-
-            System.out.println("areaCodeJpo--->" + areaCodeJpo);
-            System.out.println("sido---->" + sido);
-
-        });
-
-        System.out.println("----------2222----------");
-        //System.out.println("areaList---->" + areaList);
-        System.out.println("----------2222----------");
-
-//        System.out.println("리스트에 값을 꺼내보자!----->" + areaList.get(0));  // 에러남
-
-        List<ContractJpo> findSido = contractJpaRepository.findAll(pageable).getContent();
-        System.out.println(")))))))))))))findSido)))))))))" + findSido);
-        List<AreaContract> areaList = findSido.stream().map(AreaContract::entityOf).collect(Collectors.toList());
-        return areaList;
+		List<AreaContract> areaList = findList.stream().map(AreaContract::entityOf).collect(Collectors.toList());
+		return areaList;
     }
 }

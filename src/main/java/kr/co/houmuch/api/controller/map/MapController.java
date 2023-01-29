@@ -18,6 +18,6 @@ public class MapController {
     private final MapService mapService;
     @GetMapping(path = "/fetchList")
     public List<?> fetchList(@RequestParam(name = "type", required = false, defaultValue = "2") int type){
-        return mapService.fetchAsync(type);
+        return mapService.fetchList(type);
     }
 }
