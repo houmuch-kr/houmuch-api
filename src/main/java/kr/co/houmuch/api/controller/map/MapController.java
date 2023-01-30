@@ -18,7 +18,7 @@ public class MapController {
     private final AreaCodeJpaRepository areaCodeJpaRepository;
     private final MapService mapService;
     @GetMapping(path = "/fetchList")
-    public AreaContract fetchList(@RequestParam(name = "type", required = false, defaultValue = "2") int type){
-        return mapService.fetchList(type);
+    public AreaContract fetchList(){
+        return mapService.fetchList();
     }
 }
