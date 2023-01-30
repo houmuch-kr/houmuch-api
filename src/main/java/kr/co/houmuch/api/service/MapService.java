@@ -11,40 +11,26 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class MapService {
     private final AreaCodeJpaRepository areaCodeJpaRepository;
-    public List<AreaContract> fetchList(int type){
-        PageRequest pageable = PageRequest.of(0,30);
+    private final ContractJpaRepository contractJpaRepository;
+    public AreaContract fetchList(){
+        PageRequest pageable = PageRequest.of(0,5);
 
-		List<Integer> sidoList = areaCodeJpaRepository
-				.findSido(pageable)
-				.stream()
-				.map(areaCodeJpo -> areaCodeJpo.getCode().getSido())
-				.collect(Collectors.toList());
-		System.out.println("sidoList---->" + sidoList);
+        // sido, sgg, umg 전국 리스트 조회
+        List<AreaCodeJpo> findAreaCodeList = new ArrayList<>();
+        findAreaCodeList.addAll(areaCodeJpaRepository.findSido(pageable).getContent());
+        findAreaCodeList.addAll(areaCodeJpaRepository.findSgg(pageable).getContent());
+        findAreaCodeList.addAll(areaCodeJpaRepository.findUmd(pageable).getContent());
 
-		List<Integer> sggList = areaCodeJpaRepository
-				.findSgg(pageable)
-				.stream()
-				.map(areaCodeJpo -> areaCodeJpo.getCode().getSgg())
-				.collect(Collectors.toList());
-		System.out.println("sggList---->" + sggList);
+        // building 전체 리스트 조회
+        List<ContractJpo> findContractList=contractJpaRepository.findAll(pageable).getContent();
 
-		List<AreaCodeJpo> findList = new ArrayList<>();
+        AreaContract FetchAll = AreaContract.of(findAreaCodeList,findContractList);
 
-		for(int sidoInt : sidoList){
-			System.out.println("sidoInt--->" + sidoInt);
-			for(int sggInt : sggList){
-				findList.addAll(areaCodeJpaRepository.findByCodeSidoAndCodeSgg(sidoInt, sggInt, pageable).getContent());
-				System.out.println("뭐나올랑가?----->" + findList);
-			}
-		}
-
-		List<AreaContract> areaList = findList.stream().map(AreaContract::entityOf).collect(Collectors.toList());
-		return areaList;
+        return FetchAll;
     }
 }
