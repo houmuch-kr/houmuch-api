@@ -7,13 +7,11 @@ import kr.co.houmuch.core.domain.code.AreaCodeJpo;
 import kr.co.houmuch.core.domain.contract.jpa.ContractJpaRepository;
 import kr.co.houmuch.core.domain.contract.jpa.ContractJpo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -76,19 +74,19 @@ public class MapService {
 //        System.out.println("findList = " + findList);
 
 // 아,,, 약간 비효율적인가 다 더하는게?
-        List<AreaCodeJpo> findList = new ArrayList<>();
-        findList.addAll(areaCodeJpaRepository.findSido(pageable).getContent());
-        findList.addAll(areaCodeJpaRepository.findSgg(pageable).getContent());
-        findList.addAll(areaCodeJpaRepository.findUmd(pageable).getContent());
+        List<AreaCodeJpo> findAreaCodeList = new ArrayList<>();
+        findAreaCodeList.addAll(areaCodeJpaRepository.findSido(pageable).getContent());
+        findAreaCodeList.addAll(areaCodeJpaRepository.findSgg(pageable).getContent());
+        findAreaCodeList.addAll(areaCodeJpaRepository.findUmd(pageable).getContent());
 //        System.out.println("findList = " + findList);
 //
 
         // building 전체 리스트 조회
-        List<ContractJpo> fetchContract=contractJpaRepository.findAll(pageable).getContent();
+        List<ContractJpo> findContractList=contractJpaRepository.findAll(pageable).getContent();
 //        System.out.println("fetchContract = " + fetchContract);
 
 
-        AreaContract FetchAll = AreaContract.of(findList,fetchContract);
+        AreaContract FetchAll = AreaContract.of(findAreaCodeList,findContractList);
 
 
         return FetchAll;
