@@ -22,7 +22,7 @@ public class ContractController {
     }
 
     @GetMapping(path = "/{buildingId}")
-    public ResponseEntity<ApiResponse<BuildingContractList>> getBuilding(@PathVariable("buildingId") long buildingId) {
+    public ResponseEntity<ApiResponse<BuildingContractList>> getBuilding(@PathVariable("buildingId") String buildingId) {
         return ResponseEntity.ok(
                 ApiResponse.of(contractBuildingFetchService.fetch(buildingId)));
     }
@@ -34,7 +34,7 @@ public class ContractController {
     }
 
     @GetMapping(path = "/summary/{buildingId}")
-    public ResponseEntity<ApiResponse<BuildingContractSummary>> getBuildingSummary(@PathVariable("buildingId") long buildingId) {
+    public ResponseEntity<ApiResponse<BuildingContractSummary>> getBuildingSummary(@PathVariable("buildingId") String buildingId) {
         return ResponseEntity.ok(
                 ApiResponse.of(contractBuildingFetchService.fetchSummary(buildingId)));
     }
@@ -46,7 +46,7 @@ public class ContractController {
     }
 
     @GetMapping(path = "/trend/{buildingId}")
-    public ResponseEntity<ApiResponse<BuildingContractTrend>> getBuildingTrend(@PathVariable("buildingId") long buildingId) {
+    public ResponseEntity<ApiResponse<BuildingContractTrend>> getBuildingTrend(@PathVariable("buildingId") String buildingId) {
         return ResponseEntity.ok(
                 ApiResponse.of(contractBuildingFetchService.fetchTrend(buildingId)));
     }
