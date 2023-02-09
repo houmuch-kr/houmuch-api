@@ -10,8 +10,8 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder
 public abstract class ContractSummary {
-    protected int priceMonth;
-    protected int priceYear;
+    protected double priceMonth;
+    protected double priceYear;
     protected int tradeCount;
     protected int rentCount;
 }
