@@ -7,6 +7,7 @@ import kr.co.houmuch.api.domain.dto.contract.ContractTrend;
 import kr.co.houmuch.core.domain.code.AreaCodeJpaRepository;
 import kr.co.houmuch.core.domain.code.AreaCodeJpo;
 import kr.co.houmuch.core.domain.code.dto.AreaCode;
+import kr.co.houmuch.core.domain.common.jpa.CombinedAreaCodeJpo;
 import kr.co.houmuch.core.domain.contract.ContractType;
 import kr.co.houmuch.core.domain.contract.dto.Contract;
 import kr.co.houmuch.core.domain.contract.jpa.ContractDetailJpo;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.YearMonth;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,7 +34,11 @@ public class ContractAreaFetchService {
     @Transactional
     public AreaContractList fetch(long areaCode) {
         AreaCodeJpo areaCodeJpo = ensureAreaCode(areaCode);
-        List<ContractJpo> contractList = contractJpaRepository.findByAreaCode(areaCodeJpo);
+        CombinedAreaCodeJpo combinedAreaCodeJpo = areaCodeJpo.getCode();
+        List<ContractJpo> contractList = contractJpaRepository.findByAreaCode(
+                combinedAreaCodeJpo.getSido(),
+                combinedAreaCodeJpo.getSgg(),
+                combinedAreaCodeJpo.getUmd());
         return AreaContractList.builder()
                 .contractList(contractList.stream()
                         .map(Contract::entityOf)
@@ -44,7 +50,11 @@ public class ContractAreaFetchService {
     @Transactional
     public AreaContractSummary fetchSummary(long areaCode) {
         AreaCodeJpo areaCodeJpo = ensureAreaCode(areaCode);
-        List<ContractJpo> contractList = contractJpaRepository.findByAreaCode(areaCodeJpo);
+        CombinedAreaCodeJpo combinedAreaCodeJpo = areaCodeJpo.getCode();
+        List<ContractJpo> contractList = contractJpaRepository.findByAreaCode(
+                combinedAreaCodeJpo.getSido(),
+                combinedAreaCodeJpo.getSgg(),
+                combinedAreaCodeJpo.getUmd());
         List<ContractJpo> tradeList = filter(contractList, contractJpo -> ContractType.TRADE.equals(contractJpo.getType()));
         List<ContractJpo> rentList = filter(contractList, contractJpo -> ContractType.RENT.equals(contractJpo.getType()));
         return AreaContractSummary.builder()
@@ -67,7 +77,11 @@ public class ContractAreaFetchService {
     @Transactional
     public AreaContractTrend fetchTrend(long areaCode) {
         AreaCodeJpo areaCodeJpo = ensureAreaCode(areaCode);
-        List<ContractJpo> contractList = contractJpaRepository.findByAreaCode(areaCodeJpo);
+        CombinedAreaCodeJpo combinedAreaCodeJpo = areaCodeJpo.getCode();
+        List<ContractJpo> contractList = contractJpaRepository.findByAreaCode(
+                combinedAreaCodeJpo.getSido(),
+                combinedAreaCodeJpo.getSgg(),
+                combinedAreaCodeJpo.getUmd());
         Map<YearMonth, List<ContractJpo>> monthMap = contractList.stream()
                 .collect(Collectors.groupingBy(contractJpo -> YearMonth.from(contractJpo.getContractedAt())));
         return AreaContractTrend.builder()
@@ -81,6 +95,7 @@ public class ContractAreaFetchService {
                                         .orElseThrow())
                                 .count(entry.getValue().size())
                                 .build())
+                        .sorted(Comparator.comparing(ContractTrend.MonthSummary::getYearMonth))
                         .toList())
                 .build();
     }

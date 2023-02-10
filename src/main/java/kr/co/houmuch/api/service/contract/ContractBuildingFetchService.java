@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.YearMonth;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -53,12 +54,12 @@ public class ContractBuildingFetchService {
                         .map(ContractJpo::getDetail)
                         .mapToDouble(ContractDetailJpo::getPrice)
                         .average()
-                        .orElseThrow())
+                        .orElse(0))
                 .priceYear(tradeList.stream()
                         .map(ContractJpo::getDetail)
                         .mapToDouble(ContractDetailJpo::getPrice)
                         .average()
-                        .orElseThrow())
+                        .orElse(0))
                 .tradeCount(tradeList.size())
                 .rentCount(rentList.size())
                 .build();
@@ -81,6 +82,7 @@ public class ContractBuildingFetchService {
                                         .orElseThrow())
                                 .count(entry.getValue().size())
                                 .build())
+                        .sorted(Comparator.comparing(ContractTrend.MonthSummary::getYearMonth))
                         .toList())
                 .build();
     }
