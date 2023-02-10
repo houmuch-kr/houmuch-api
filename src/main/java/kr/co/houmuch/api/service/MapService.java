@@ -10,7 +10,6 @@ import kr.co.houmuch.core.domain.contract.jpa.ContractDetailJpo;
 import kr.co.houmuch.core.domain.contract.jpa.ContractJpaRepository;
 import kr.co.houmuch.core.domain.contract.jpa.ContractJpo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,19 +21,14 @@ import java.util.stream.Collectors;
 public class MapService{
     private final AreaCodeJpaRepository areaCodeJpaRepository;
     private final ContractJpaRepository contractJpaRepository;
-    private final BuildingJpaRepository buildingJpaRepository;
 
     public List<AreaContract> fetch(int type) {
-        List<AreaCodeJpo> areaCodeList = areaCodeJpaRepository
-                .findByType(type);
+        List<AreaCodeJpo> areaCodeList = areaCodeJpaRepository.findByType(type);
 
         List<Integer> sidoLists = areaCodeList.stream()
                 .map(AreaCodeJpo::getCode)
                 .map(CombinedAreaCodeJpo::getSido)
                 .toList();
-
-        System.out.println("areaCodeList--->" + areaCodeList);
-        System.out.println("sidoLists---->" + sidoLists);
 
         // 모든 거래내역들
         List<ContractJpo> contractList = contractJpaRepository.findByBuildingAreaCode(sidoLists);
@@ -49,14 +43,12 @@ public class MapService{
                     for (ContractJpo contractJpo : contractList) {
                         int contractAreaCode = contractJpo.getBuilding().getAreaCode().getCode().getSido();
                         int areaCodeSido = areaCodeJpo.getCode().getSido();
-                        if (contractAreaCode == (areaCodeSido)) {
+                        if (contractAreaCode == areaCodeSido) {
                             count++;
                             contractPrice += contractJpo.getDetail().getPrice();
                         }
                     }
                     contractPrice = contractPrice / count;
-                    System.out.println("contractPrice----->" + contractPrice);
-                    System.out.println("count---->" + count);
 
                     AreaContract areaContract = AreaContract.builder()
                             .areaCode(AreaCode.entityOf(areaCodeJpo))
