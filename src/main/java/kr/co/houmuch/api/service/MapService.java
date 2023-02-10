@@ -1,7 +1,6 @@
 package kr.co.houmuch.api.service;
 
 import kr.co.houmuch.api.domain.dto.map.AreaContract;
-import kr.co.houmuch.core.domain.building.jpa.BuildingJpaRepository;
 import kr.co.houmuch.core.domain.code.AreaCodeJpaRepository;
 import kr.co.houmuch.core.domain.code.AreaCodeJpo;
 import kr.co.houmuch.core.domain.code.dto.AreaCode;
@@ -30,20 +29,30 @@ public class MapService{
                 .map(CombinedAreaCodeJpo::getSido)
                 .toList();
 
-        // 모든 거래내역들
-        List<ContractJpo> contractList = contractJpaRepository.findByBuildingAreaCode(sidoLists);
+        List<Integer> sggLists = areaCodeList.stream()
+                .map(AreaCodeJpo::getCode)
+                .map(CombinedAreaCodeJpo::getSgg)
+                .toList();
 
+        List<Integer> umdLists = areaCodeList.stream()
+                .map(AreaCodeJpo::getCode)
+                .map(CombinedAreaCodeJpo::getUmd)
+                .toList();
+
+        // 모든 거래내역들
+        List<ContractJpo> contractList =  new ArrayList<>();
         List<AreaContract> areaContractList = new ArrayList<>();
 
         switch (type) {
             case 0:
+                contractList = contractJpaRepository.findByBuildingAreaCodeSido(sidoLists);
                 for (AreaCodeJpo areaCodeJpo : areaCodeList){
                     int count = 0;
                     double contractPrice = 0.0;
                     for (ContractJpo contractJpo : contractList) {
-                        int contractAreaCode = contractJpo.getBuilding().getAreaCode().getCode().getSido();
+                        int contractAreaCodeSido = contractJpo.getBuilding().getAreaCode().getCode().getSido();
                         int areaCodeSido = areaCodeJpo.getCode().getSido();
-                        if (contractAreaCode == areaCodeSido) {
+                        if (contractAreaCodeSido == areaCodeSido) {
                             count++;
                             contractPrice += contractJpo.getDetail().getPrice();
                         }
@@ -60,64 +69,60 @@ public class MapService{
                 break;
 
             case 1:
+                contractList = contractJpaRepository.findByBuildingAreaCodeSgg(sggLists);
                 for (AreaCodeJpo areaCodeJpo : areaCodeList){
+                    int count = 0;
+                    double contractPrice = 0.0;
+                    for (ContractJpo contractJpo : contractList) {
+                        int contractAreaCodeSido = contractJpo.getBuilding().getAreaCode().getCode().getSido();
+                        int areaCodeSido = areaCodeJpo.getCode().getSido();
+                        int contractAreaCodeSgg = contractJpo.getBuilding().getAreaCode().getCode().getSgg();
+                        int areaCodeSgg = areaCodeJpo.getCode().getSgg();
+                        if (contractAreaCodeSido == areaCodeSido) {
+                            if(contractAreaCodeSgg == areaCodeSgg) {
+                                count++;
+                                contractPrice += contractJpo.getDetail().getPrice();
+                            }
+                        }
+                    }
+                    contractPrice = contractPrice / count;
+
                     AreaContract areaContract = AreaContract.builder()
                             .areaCode(AreaCode.entityOf(areaCodeJpo))
-//                            .count(contractList.size() == 0 ? contractList
-//                                    .stream()
-//                                    .collect(Collectors.groupingBy(contractJpo -> contractJpo.getBuilding().getAreaCode().getCode().getSgg()))
-//                                    .get(areaCodeJpo.getCode().getSgg())
-//                                    .size() : 0
-//                            )
-//                            .price(contractList
-//                                    .stream()
-//                                    .collect(Collectors.groupingBy(contractJpo -> contractJpo.getBuilding().getAreaCode().getCode().getSgg()))
-//                                    .get(areaCodeJpo.getCode().getSgg())
-//                                    .stream()
-//                                    .map(ContractJpo::getDetail)
-//                                    .mapToInt(ContractDetailJpo::getPrice)
-//                                    .average()
-//                                    .orElse(0)
-//                            )
+                            .count(count)
+                            .price(contractPrice)
                             .build();
                     areaContractList.add(areaContract);
                 }
-
                 break;
 
             case 2:
-                for (ContractJpo contractJpo : contractList) {
-                    AreaContract areaContract = AreaContract.builder()
-                            .areaCode(AreaCode.entityOf(contractJpo.getBuilding().getAreaCode()))
-//            .count(contractList.size())
-                            .count(contractList
-                                    .stream()
-                                    .collect(Collectors.groupingBy(contractJpo1 -> contractJpo1.getBuilding().getId()))
-                                    .get(contractJpo.getBuilding().getId())
+                contractList = contractJpaRepository.findByBuildingAreaCodeUmd(umdLists);
+                for (AreaCodeJpo areaCodeJpo : areaCodeList){
+                    int count = 0;
+                    double contractPrice = 0.0;
+                    for (ContractJpo contractJpo : contractList) {
+                        int contractAreaCodeSido = contractJpo.getBuilding().getAreaCode().getCode().getSido();
+                        int areaCodeSido = areaCodeJpo.getCode().getSido();
+                        int contractAreaCodeSgg = contractJpo.getBuilding().getAreaCode().getCode().getSgg();
+                        int areaCodeSgg = areaCodeJpo.getCode().getSgg();
+                        int contractAreaCodeUmd = contractJpo.getBuilding().getAreaCode().getCode().getUmd();
+                        int areaCodeUmd = areaCodeJpo.getCode().getUmd();
+                        if (contractAreaCodeSido == areaCodeSido) {
+                            if(contractAreaCodeSgg == areaCodeSgg) {
+                                if(contractAreaCodeUmd == areaCodeUmd) {
+                                    count++;
+                                    contractPrice += contractJpo.getDetail().getPrice();
+                                }
+                            }
+                        }
+                    }
+                    contractPrice = contractPrice / count;
 
-                                    .size()
-                            )
-//            .price(contractList.stream()
-//                    .map(ContractJpo::getDetail)
-//                    .mapToInt(ContractDetailJpo::getPrice)
-//                    .average()
-//                    .orElse(0))
-//            .contracts(contractList.stream().map(Contract::entityOf).collect(Collectors.toList()))
-                            .price(contractList
-                                    .stream()
-                                    .collect(Collectors.groupingBy(contractJpo1 -> contractJpo1.getBuilding().getId()))
-                                    .get(contractJpo.getBuilding().getId())
-                                    .stream()
-                                    .map(ContractJpo::getDetail)
-                                    .mapToInt(ContractDetailJpo::getPrice)
-                                    .average()
-                                    .orElse(0)
-                            )
-//                            .building(contractJpo.getBuilding().getCoordinate() != null ?
-//                                    Building.of(contractJpo.getBuilding().getName()
-//                                            , Coordinate.of(contractJpo.getBuilding().getCoordinate().getCoordinate().getLatitude()
-//                                                    , contractJpo.getBuilding().getCoordinate().getCoordinate().getLongitude()))
-//                                    : null)
+                    AreaContract areaContract = AreaContract.builder()
+                            .areaCode(AreaCode.entityOf(areaCodeJpo))
+                            .count(count)
+                            .price(contractPrice)
                             .build();
                     areaContractList.add(areaContract);
                 }
