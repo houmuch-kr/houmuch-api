@@ -60,3 +60,4 @@ jobs:
       - run: gradle build -Pprofile=prod
       - run: echo $GITHUB_PASSWORD | docker login https://ghcr.io -u youspend8 --password-stdin
       - run: docker build -t ghcr.io/houmuch-kr/api:1.0.0 -f deploy/Dockerfile .
+      - run: docker push ghcr.io/houmuch-kr/houmuch-api:1.0.0
