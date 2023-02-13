@@ -20,6 +20,8 @@ jobs:
           HM_SLACK_WEBHOOK_TOKEN: $HM_SLACK_WEBHOOK_TOKEN
           HM_NAVER_CLIENT_ID: $HM_NAVER_CLIENT_ID
           HM_NAVER_CLIENT_SECRET: $HM_NAVER_CLIENT_SECRET
+          GITHUB_USERNAME: $GITHUB_USERNAME
+          GITHUB_PASSWORD: $GITHUB_PASSWORD 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
