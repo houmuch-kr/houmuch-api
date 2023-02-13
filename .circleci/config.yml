@@ -10,7 +10,7 @@ jobs:
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
       # specify the version you desire here
-      - image: circleci/openjdk:17
+      - image: circleci/openjdk:17-buster
         environment:
           JVM_OPTS: -Xmx2048m -Xms2048m
           HM_OPEN_API_KEY: $HM_OPEN_API_KEY
