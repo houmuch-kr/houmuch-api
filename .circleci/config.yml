@@ -50,6 +50,8 @@ jobs:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
+      - run: echo $HM_DB_URL
+      
       # run tests!
       - run:
           command: gradle test
