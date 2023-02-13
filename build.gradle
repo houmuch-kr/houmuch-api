@@ -17,6 +17,15 @@ configurations {
 repositories {
     mavenLocal()
     mavenCentral()
+    if (project.hasProperty("profile") && project.property("profile").toString().contains("prod")) {
+        maven {
+            url = uri("https://maven.pkg.github.com/houmuch-kr/registry")
+            credentials {
+                username = System.getenv("GITHUB_USERNAME")
+                password = System.getenv("GITHUB_PASSWORD")
+            }
+        }
+    }
 }
 
 dependencies {
@@ -28,7 +37,7 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    implementation 'kr.co.houmuch:core:1.0.0'
+    implementation 'kr.co.houmuch:core:1.0.0-SNAPSHOT'
     testImplementation 'com.h2database:h2'
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
     implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
