@@ -52,3 +52,14 @@ jobs:
       # run tests!
       - run:
           command: gradle test
+          environment:
+            # Customize the JVM maximum heap limit
+            JVM_OPTS: -Xmx3200m
+            TERM: dumb
+            HM_OPEN_API_KEY: $HM_OPEN_API_KEY
+            HM_DB_URL: $HM_DB_URL
+            HM_DB_USERNAME: $HM_DB_USERNAME
+            HM_DB_PASSWORD: $HM_DB_PASSWORD
+            HM_SLACK_WEBHOOK_TOKEN: $HM_SLACK_WEBHOOK_TOKEN
+            HM_NAVER_CLIENT_ID: $HM_NAVER_CLIENT_ID
+            HM_NAVER_CLIENT_SECRET: $HM_NAVER_CLIENT_SECRET
