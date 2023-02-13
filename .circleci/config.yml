@@ -23,13 +23,6 @@ jobs:
       # Customize the JVM maximum heap limit
       JVM_OPTS: -Xmx3200m
       TERM: dumb
-      HM_OPEN_API_KEY: ${HM_OPEN_API_KEY}
-      HM_DB_URL: ${HM_DB_URL}
-      HM_DB_USERNAME: ${HM_DB_USERNAME}
-      HM_DB_PASSWORD: ${HM_DB_PASSWORD}
-      HM_SLACK_WEBHOOK_TOKEN: ${HM_SLACK_WEBHOOK_TOKEN}
-      HM_NAVER_CLIENT_ID: ${HM_NAVER_CLIENT_ID}
-      HM_NAVER_CLIENT_SECRET: ${HM_NAVER_CLIENT_SECRET}
           # Add steps to the job
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
@@ -50,4 +43,16 @@ jobs:
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
       # run tests!
-      - run: gradle test
+      - run: 
+          command: gradle test
+          environment:
+            # Customize the JVM maximum heap limit
+            JVM_OPTS: -Xmx3200m
+            TERM: dumb
+            HM_OPEN_API_KEY: ${HM_OPEN_API_KEY}
+            HM_DB_URL: ${HM_DB_URL}
+            HM_DB_USERNAME: ${HM_DB_USERNAME}
+            HM_DB_PASSWORD: ${HM_DB_PASSWORD}
+            HM_SLACK_WEBHOOK_TOKEN: ${HM_SLACK_WEBHOOK_TOKEN}
+            HM_NAVER_CLIENT_ID: ${HM_NAVER_CLIENT_ID}
+            HM_NAVER_CLIENT_SECRET: ${HM_NAVER_CLIENT_SECRET}
