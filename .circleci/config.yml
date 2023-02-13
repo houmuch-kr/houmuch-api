@@ -21,7 +21,7 @@ jobs:
           HM_NAVER_CLIENT_ID: $HM_NAVER_CLIENT_ID
           HM_NAVER_CLIENT_SECRET: $HM_NAVER_CLIENT_SECRET
           GITHUB_USERNAME: $GITHUB_USERNAME
-          GITHUB_PASSWORD: $GITHUB_PASSWORD 
+          GITHUB_PASSWORD: $GITHUB_PASSWORD
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
@@ -52,8 +52,8 @@ jobs:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
-      - run: echo $HM_DB_URL
-      
       # run tests!
-      - run:
-          command: gradle test
+      - run: gradle test -Pprofile=prod
+      - run: gradle build -Pprofile=prod
+      - run: echo $GITHUB_PASSWORD | docker login https://ghcr.io -u youspend8 --password-stdin
+      - run: docker build -t ghcr.io/houmuch-kr/api:1.0.0 -f deploy/Dockerfile .
