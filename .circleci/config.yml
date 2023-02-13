@@ -11,7 +11,15 @@ jobs:
     docker:
       # specify the version you desire here
       - image: circleci/openjdk:17-jdk-buster
-
+        environment:
+          JVM_OPTS: -Xmx2048m -Xms2048m
+          HM_OPEN_API_KEY: $HM_OPEN_API_KEY
+          HM_DB_URL: $HM_DB_URL
+          HM_DB_USERNAME: $HM_DB_USERNAME
+          HM_DB_PASSWORD: $HM_DB_PASSWORD
+          HM_SLACK_WEBHOOK_TOKEN: $HM_SLACK_WEBHOOK_TOKEN
+          HM_NAVER_CLIENT_ID: $HM_NAVER_CLIENT_ID
+          HM_NAVER_CLIENT_SECRET: $HM_NAVER_CLIENT_SECRET
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
@@ -23,14 +31,7 @@ jobs:
       # Customize the JVM maximum heap limit
       JVM_OPTS: -Xmx3200m
       TERM: dumb
-      HM_OPEN_API_KEY: ${HM_OPEN_API_KEY}
-      HM_DB_URL: ${HM_DB_URL}
-      HM_DB_USERNAME: ${HM_DB_USERNAME}
-      HM_DB_PASSWORD: ${HM_DB_PASSWORD}
-      HM_SLACK_WEBHOOK_TOKEN: ${HM_SLACK_WEBHOOK_TOKEN}
-      HM_NAVER_CLIENT_ID: ${HM_NAVER_CLIENT_ID}
-      HM_NAVER_CLIENT_SECRET: ${HM_NAVER_CLIENT_SECRET}
-          # Add steps to the job
+      # Add steps to the job
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
       - checkout
@@ -49,5 +50,8 @@ jobs:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
+      - run: echo $HM_DB_URL
+      
       # run tests!
-      - run: gradle test
+      - run:
+          command: gradle test
