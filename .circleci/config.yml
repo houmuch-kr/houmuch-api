@@ -1,19 +1,7 @@
-# Java Gradle CircleCI 2.0 configuration file
-# See: https://circleci.com/docs/2.0/language-java/
-version: 2
-
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
+version: 2.1
 jobs:
   build:
-    filters:
-      branches:
-        only:
-          - develop
-    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
-      # specify the version you desire here
       - image: circleci/openjdk:17-buster
         environment:
           JVM_OPTS: -Xmx2048m -Xms2048m
@@ -26,42 +14,52 @@ jobs:
           HM_NAVER_CLIENT_SECRET: $HM_NAVER_CLIENT_SECRET
           GITHUB_USERNAME: $GITHUB_USERNAME
           GITHUB_PASSWORD: $GITHUB_PASSWORD
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
-
     working_directory: ~/repo
-
     environment:
-      # Customize the JVM maximum heap limit
       JVM_OPTS: -Xmx3200m
       TERM: dumb
-      # Add steps to the job
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
       - checkout
-
       - setup_remote_docker:
           version: 20.10.14
           docker_layer_caching: true
-
-      # Download and cache dependencies
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "build.gradle" }}
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
-
       - run: gradle dependencies
-
       - save_cache:
           paths:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
-      # run tests!
       - run: gradle test -Pprofile=prod
       - run: gradle build -Pprofile=prod
       - run: echo $GITHUB_PASSWORD | docker login https://ghcr.io -u youspend8 --password-stdin
       - run: docker build -t ghcr.io/houmuch-kr/api:1.0.0 -f deploy/Dockerfile .
       - run: docker push ghcr.io/houmuch-kr/api:1.0.0
+
+  deploy:
+    machine:
+      enabled: true
+    steps:
+      - run:
+          name: Deploy Over SSH
+          command: |
+            ssh $DEV_SSH_USER@$DEV_SSH_HOST "whoami"
+
+workflows:
+  build-deploy:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only:
+                - develop
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - develop
