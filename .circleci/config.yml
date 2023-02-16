@@ -49,7 +49,16 @@ jobs:
             ssh $DEV_SSH_USER@$DEV_SSH_HOST '
               docker pull ghcr.io/houmuch-kr/api:1.0.0
               docker rm -f api 2> /dev/null
-              docker run -d -p 18080:8080 --name api ghcr.io/houmuch-kr/api:1.0.0
+              docker run -d -p 18080:8080 \
+              -e JVM_OPTS="-Xmx2048m -Xms2048m" \
+              -e HM_OPEN_API_KEY="$HM_OPEN_API_KEY" \
+              -e HM_DB_URL="$HM_DB_URL" \
+              -e HM_DB_USERNAME="$HM_DB_USERNAME" \
+              -e HM_DB_PASSWORD="$HM_DB_PASSWORD" \
+              -e HM_SLACK_WEBHOOK_TOKEN="$HM_SLACK_WEBHOOK_TOKEN" \
+              -e HM_NAVER_CLIENT_ID="$HM_NAVER_CLIENT_ID" \
+              -e HM_NAVER_CLIENT_SECRET="$HM_NAVER_CLIENT_SECRET" \
+              --name api ghcr.io/houmuch-kr/api:1.0.0
             '
 
 workflows:
