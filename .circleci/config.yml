@@ -51,15 +51,17 @@ jobs:
 workflows:
   build-deploy:
     jobs:
-      - build:
-          filters:
-            branches:
-              only:
-                - develop
-      - deploy:
-          requires:
-            - build
-          filters:
-            branches:
-              only:
-                - develop
+      - build
+      - deploy
+      # - build:
+      #     filters:
+      #       branches:
+      #         only:
+      #           - develop
+      # - deploy:
+      #     requires:
+      #       - build
+      #     filters:
+      #       branches:
+      #         only:
+      #           - develop
