@@ -43,13 +43,10 @@ jobs:
     machine:
       enabled: true
     steps:
-      - add_ssh_keys:
-          fingerprints:
-            - 47:43:7c:e9:74:b4:e6:f0:f5:0c:a8:44:83:28:f3:7a
       - run:
           name: Deploy Over SSH
           command: |
-            ssh $DEV_SSH_USER@$DEV_SSH_HOST 'echo 11 >> circle'
+            ssh $DEV_SSH_USER@$DEV_SSH_HOST 'echo 12 >> circle'
 
 workflows:
   build-deploy:
