@@ -48,7 +48,7 @@ jobs:
           command: |
             ssh $DEV_SSH_USER@$DEV_SSH_HOST '
               docker pull ghcr.io/houmuch-kr/api:1.0.0
-              docker-compose -f "~/houmuch/docker-compose.yml" up -d
+              docker-compose -f "houmuch/docker-compose.yml" up -d
             '
 
 workflows:
