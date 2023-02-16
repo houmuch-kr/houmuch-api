@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/v1/contract")
+@CrossOrigin
 public class ContractController {
     private final ContractAreaFetchService contractAreaFetchService;
     private final ContractBuildingFetchService contractBuildingFetchService;
