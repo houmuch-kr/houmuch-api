@@ -50,7 +50,7 @@ jobs:
               docker pull ghcr.io/houmuch-kr/api:1.0.0
               docker rm -f api 2> /dev/null
               docker run -d -p 18080:8080 \
-              -e JVM_OPTS=-Xmx2048m -Xms2048m \
+              -e JVM_OPTS="-Xmx2048m -Xms2048m" \
               -e HM_OPEN_API_KEY=$HM_OPEN_API_KEY \
               -e HM_DB_URL=$HM_DB_URL \
               -e HM_DB_USERNAME=$HM_DB_USERNAME \
