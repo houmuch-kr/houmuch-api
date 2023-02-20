@@ -1,11 +1,16 @@
 package kr.co.houmuch.api.controller.contract;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import kr.co.houmuch.api.controller.response.ApiResponse;
 import kr.co.houmuch.api.domain.dto.contract.*;
 import kr.co.houmuch.api.domain.dto.map.AreaContract;
 import kr.co.houmuch.api.service.MapService;
 import kr.co.houmuch.api.service.contract.ContractAreaFetchService;
 import kr.co.houmuch.api.service.contract.ContractBuildingFetchService;
+import kr.co.houmuch.api.swagger.SwaggerApiInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,12 +20,18 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/v1/contract")
+@Api(tags = SwaggerApiInfo.CONTRACT)
 @CrossOrigin
 public class ContractController {
     private final ContractAreaFetchService contractAreaFetchService;
     private final ContractBuildingFetchService contractBuildingFetchService;
     private final MapService mapService;
+    
     @GetMapping(path = "/fetchList")
+    @ApiOperation(value = SwaggerApiInfo.GET_AREA_CONTRACT_LIST, notes = SwaggerApiInfo.GET_AREA_CONTRACT_LIST)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "type", required = true, example = "0")
+    })
     public ResponseEntity<ApiResponse<List<AreaContract>>> fetchList(@RequestParam(name = "type", required = false, defaultValue = "0") int type){
         return ResponseEntity.ok(
                 ApiResponse.of(mapService.fetch(type)));

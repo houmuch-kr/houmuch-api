@@ -1,5 +1,5 @@
 server:
-  port: 7777
+  port: 7070
   error:
     whitelabel:
       enabled: false
@@ -7,6 +7,10 @@ server:
     context-path: /api
 
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
   datasource:
     url: ${HM_DB_URL}
     username: ${HM_DB_USERNAME}
