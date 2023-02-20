@@ -27,7 +27,7 @@ public class ContractController {
     private final ContractBuildingFetchService contractBuildingFetchService;
     private final MapService mapService;
     @GetMapping(path = "/fetchList")
-    @ApiOperation(value = SwaggerApiInfo.AreaContract_List, notes = SwaggerApiInfo.AreaContract_List)
+    @ApiOperation(value = SwaggerApiInfo.GET_AREA_CONTRACT_LIST, notes = SwaggerApiInfo.GET_AREA_CONTRACT_LIST)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "type", required = true, example = "0")
     })
