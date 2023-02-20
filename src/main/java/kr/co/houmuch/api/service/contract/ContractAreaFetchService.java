@@ -13,6 +13,7 @@ import kr.co.houmuch.core.domain.contract.dto.Contract;
 import kr.co.houmuch.core.domain.contract.jpa.ContractDetailJpo;
 import kr.co.houmuch.core.domain.contract.jpa.ContractJpaRepository;
 import kr.co.houmuch.core.domain.contract.jpa.ContractJpo;
+import kr.co.houmuch.core.util.DateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -64,11 +65,13 @@ public class ContractAreaFetchService {
         return AreaContractSummary.builder()
                 .areaCode(AreaCode.entityOf(areaCodeJpo))
                 .priceMonth(tradeList.stream()
+                        .filter(contractJpo -> DateUtils.isFromMonth(contractJpo.getContractedAt(), 1))
                         .map(ContractJpo::getDetail)
                         .mapToDouble(ContractDetailJpo::getPrice)
                         .average()
                         .orElseThrow())
                 .priceYear(tradeList.stream()
+                        .filter(contractJpo -> DateUtils.isFromYear(contractJpo.getContractedAt(), 1))
                         .map(ContractJpo::getDetail)
                         .mapToDouble(ContractDetailJpo::getPrice)
                         .average()
