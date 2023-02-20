@@ -1,13 +1,11 @@
 package kr.co.houmuch.api.controller.contract;
 
-import io.swagger.annotations.Api;
 import kr.co.houmuch.api.controller.response.ApiResponse;
 import kr.co.houmuch.api.domain.dto.contract.*;
 import kr.co.houmuch.api.domain.dto.map.AreaContract;
 import kr.co.houmuch.api.service.MapService;
 import kr.co.houmuch.api.service.contract.ContractAreaFetchService;
 import kr.co.houmuch.api.service.contract.ContractBuildingFetchService;
-import kr.co.houmuch.api.swagger.SwaggerApiInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,15 +27,21 @@ public class ContractController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<AreaContractList>> get(@RequestParam long areaCode) {
+    public ResponseEntity<ApiResponse<AreaContractList>> get(
+            @RequestParam long areaCode,
+            @RequestParam int page,
+            @RequestParam int size) {
         return ResponseEntity.ok(
-                ApiResponse.of(contractAreaFetchService.fetch(areaCode)));
+                ApiResponse.of(contractAreaFetchService.fetch(areaCode, page, size)));
     }
 
     @GetMapping(path = "/{buildingId}")
-    public ResponseEntity<ApiResponse<BuildingContractList>> getBuilding(@PathVariable("buildingId") String buildingId) {
+    public ResponseEntity<ApiResponse<BuildingContractList>> getBuilding(
+            @PathVariable("buildingId") String buildingId,
+            @RequestParam int page,
+            @RequestParam int size) {
         return ResponseEntity.ok(
-                ApiResponse.of(contractBuildingFetchService.fetch(buildingId)));
+                ApiResponse.of(contractBuildingFetchService.fetch(buildingId, page, size)));
     }
 
     @GetMapping(path = "/summary")

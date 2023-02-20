@@ -14,6 +14,8 @@ import kr.co.houmuch.core.domain.contract.jpa.ContractDetailJpo;
 import kr.co.houmuch.core.domain.contract.jpa.ContractJpaRepository;
 import kr.co.houmuch.core.domain.contract.jpa.ContractJpo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,13 +34,14 @@ public class ContractAreaFetchService {
     private final ContractJpaRepository contractJpaRepository;
 
     @Transactional
-    public AreaContractList fetch(long areaCode) {
+    public AreaContractList fetch(long areaCode, int page, int size) {
         AreaCodeJpo areaCodeJpo = ensureAreaCode(areaCode);
         CombinedAreaCodeJpo combinedAreaCodeJpo = areaCodeJpo.getCode();
         List<ContractJpo> contractList = contractJpaRepository.findByAreaCode(
                 combinedAreaCodeJpo.getSido(),
                 combinedAreaCodeJpo.getSgg(),
-                combinedAreaCodeJpo.getUmd());
+                combinedAreaCodeJpo.getUmd(),
+                PageRequest.of(page, size));
         return AreaContractList.builder()
                 .contractList(contractList.stream()
                         .map(Contract::entityOf)
@@ -54,7 +57,8 @@ public class ContractAreaFetchService {
         List<ContractJpo> contractList = contractJpaRepository.findByAreaCode(
                 combinedAreaCodeJpo.getSido(),
                 combinedAreaCodeJpo.getSgg(),
-                combinedAreaCodeJpo.getUmd());
+                combinedAreaCodeJpo.getUmd(),
+                Pageable.unpaged());
         List<ContractJpo> tradeList = filter(contractList, contractJpo -> ContractType.TRADE.equals(contractJpo.getType()));
         List<ContractJpo> rentList = filter(contractList, contractJpo -> ContractType.RENT.equals(contractJpo.getType()));
         return AreaContractSummary.builder()
@@ -81,7 +85,8 @@ public class ContractAreaFetchService {
         List<ContractJpo> contractList = contractJpaRepository.findByAreaCode(
                 combinedAreaCodeJpo.getSido(),
                 combinedAreaCodeJpo.getSgg(),
-                combinedAreaCodeJpo.getUmd());
+                combinedAreaCodeJpo.getUmd(),
+                Pageable.unpaged());
         Map<YearMonth, List<ContractJpo>> monthMap = contractList.stream()
                 .collect(Collectors.groupingBy(contractJpo -> YearMonth.from(contractJpo.getContractedAt())));
         return AreaContractTrend.builder()

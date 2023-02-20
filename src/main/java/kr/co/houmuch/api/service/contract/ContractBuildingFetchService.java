@@ -13,6 +13,8 @@ import kr.co.houmuch.core.domain.contract.jpa.ContractDetailJpo;
 import kr.co.houmuch.core.domain.contract.jpa.ContractJpaRepository;
 import kr.co.houmuch.core.domain.contract.jpa.ContractJpo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,9 +33,10 @@ public class ContractBuildingFetchService {
     private final BuildingJpaRepository buildingJpaRepository;
 
     @Transactional
-    public BuildingContractList fetch(String buildingId) {
+    public BuildingContractList fetch(String buildingId, int page, int size) {
         BuildingJpo buildingJpo = ensureBuilding(buildingId);
-        List<ContractJpo> contractList = contractJpaRepository.findByBuilding(buildingJpo);
+        List<ContractJpo> contractList = contractJpaRepository
+                .findByBuilding(buildingJpo, PageRequest.of(page, size));
         return BuildingContractList.builder()
                 .building(Building.entityOf(buildingJpo))
                 .contractList(contractList.stream()
@@ -45,7 +48,8 @@ public class ContractBuildingFetchService {
     @Transactional
     public BuildingContractSummary fetchSummary(String buildingId) {
         BuildingJpo buildingJpo = ensureBuilding(buildingId);
-        List<ContractJpo> contractList = contractJpaRepository.findByBuilding(buildingJpo);
+        List<ContractJpo> contractList = contractJpaRepository
+                .findByBuilding(buildingJpo, Pageable.unpaged());
         List<ContractJpo> tradeList = filter(contractList, contractJpo -> ContractType.TRADE.equals(contractJpo.getType()));
         List<ContractJpo> rentList = filter(contractList, contractJpo -> ContractType.RENT.equals(contractJpo.getType()));
         return BuildingContractSummary.builder()
@@ -68,7 +72,8 @@ public class ContractBuildingFetchService {
     @Transactional
     public BuildingContractTrend fetchTrend(String buildingId) {
         BuildingJpo buildingJpo = ensureBuilding(buildingId);
-        List<ContractJpo> contractList = contractJpaRepository.findByBuilding(buildingJpo);
+        List<ContractJpo> contractList = contractJpaRepository
+                .findByBuilding(buildingJpo, Pageable.unpaged());
         Map<YearMonth, List<ContractJpo>> monthMap = contractList.stream()
                 .collect(Collectors.groupingBy(contractJpo -> YearMonth.from(contractJpo.getContractedAt())));
         return BuildingContractTrend.builder()
