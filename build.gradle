@@ -15,7 +15,6 @@ configurations {
 }
 
 repositories {
-    mavenLocal()
     mavenCentral()
     if (project.hasProperty("profile") && project.property("profile").toString().contains("prod")) {
         maven {
@@ -25,6 +24,8 @@ repositories {
                 password = System.getenv("GITHUB_PASSWORD")
             }
         }
+    } else {
+        mavenLocal()
     }
 }
 
