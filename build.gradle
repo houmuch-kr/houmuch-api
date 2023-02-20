@@ -16,16 +16,13 @@ configurations {
 
 repositories {
     mavenCentral()
-    if (project.hasProperty("profile") && project.property("profile").toString().contains("prod")) {
-        maven {
-            url = uri("https://maven.pkg.github.com/houmuch-kr/registry")
-            credentials {
-                username = System.getenv("GITHUB_USERNAME")
-                password = System.getenv("GITHUB_PASSWORD")
-            }
+    mavenLocal()
+    maven {
+        url = uri("https://maven.pkg.github.com/houmuch-kr/registry")
+        credentials {
+            username = System.getenv("GITHUB_USERNAME")
+            password = System.getenv("GITHUB_PASSWORD")
         }
-    } else {
-        mavenLocal()
     }
 }
 
