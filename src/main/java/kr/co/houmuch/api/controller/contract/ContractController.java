@@ -1,12 +1,18 @@
 package kr.co.houmuch.api.controller.contract;
 
+import io.swagger.annotations.Api;
 import kr.co.houmuch.api.controller.response.ApiResponse;
 import kr.co.houmuch.api.domain.dto.contract.*;
+import kr.co.houmuch.api.domain.dto.map.AreaContract;
+import kr.co.houmuch.api.service.MapService;
 import kr.co.houmuch.api.service.contract.ContractAreaFetchService;
 import kr.co.houmuch.api.service.contract.ContractBuildingFetchService;
+import kr.co.houmuch.api.swagger.SwaggerApiInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -15,6 +21,12 @@ import org.springframework.web.bind.annotation.*;
 public class ContractController {
     private final ContractAreaFetchService contractAreaFetchService;
     private final ContractBuildingFetchService contractBuildingFetchService;
+    private final MapService mapService;
+    @GetMapping(path = "/fetchList")
+    public ResponseEntity<ApiResponse<List<AreaContract>>> fetchList(@RequestParam(name = "type", required = false, defaultValue = "0") int type){
+        return ResponseEntity.ok(
+                ApiResponse.of(mapService.fetch(type)));
+    }
 
     @GetMapping
     public ResponseEntity<ApiResponse<AreaContractList>> get(@RequestParam long areaCode) {
