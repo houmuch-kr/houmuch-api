@@ -16,7 +16,7 @@ configurations {
 
 repositories {
     mavenCentral()
-    mavenLocal()
+//    mavenLocal()
     maven {
         url = uri("https://maven.pkg.github.com/houmuch-kr/registry")
         credentials {
