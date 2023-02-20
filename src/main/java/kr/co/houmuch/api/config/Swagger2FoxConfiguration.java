@@ -1,6 +1,5 @@
 package kr.co.houmuch.api.config;
 
-import kr.co.houmuch.api.swagger.SwaggerApiInfo;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
