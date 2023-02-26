@@ -11,6 +11,7 @@ import kr.co.houmuch.api.service.MapService;
 import kr.co.houmuch.api.service.contract.ContractAreaFetchService;
 import kr.co.houmuch.api.service.contract.ContractBuildingFetchService;
 import kr.co.houmuch.api.swagger.SwaggerApiInfo;
+import kr.co.houmuch.core.domain.contractSummary.jpa.ContractSummaryJpo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,15 +27,31 @@ public class ContractController {
     private final ContractAreaFetchService contractAreaFetchService;
     private final ContractBuildingFetchService contractBuildingFetchService;
     private final MapService mapService;
-    
+
+    @GetMapping(path = "/process/index")
+    @ApiOperation(value = SwaggerApiInfo.GET_PROCESS_INDEX, notes = SwaggerApiInfo.GET_PROCESS_INDEX)
+    public ResponseEntity<ApiResponse<Void>> processIndex() {
+        mapService.indexV2();
+        return ResponseEntity
+                .accepted()
+                .body(ApiResponse.empty());
+    }
+
     @GetMapping(path = "/fetchList")
     @ApiOperation(value = SwaggerApiInfo.GET_AREA_CONTRACT_LIST, notes = SwaggerApiInfo.GET_AREA_CONTRACT_LIST)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "type", required = true, example = "0")
     })
-    public ResponseEntity<ApiResponse<List<AreaContract>>> fetchList(@RequestParam(name = "type", required = false, defaultValue = "0") int type){
+    public ResponseEntity<ApiResponse<List<AreaContract>>> fetchList(
+            @RequestParam(name = "type", required = false, defaultValue = "0") int type
+            , @RequestParam(defaultValue = "39.0") double maxLatitude
+            , @RequestParam(defaultValue = "37.0") double minLatitude
+            , @RequestParam(defaultValue = "128.0") double maxLongitude
+            , @RequestParam(defaultValue = "126.0") double minLongitude)
+    {
         return ResponseEntity.ok(
-                ApiResponse.of(mapService.fetch(type)));
+//                ApiResponse.of(mapService.fetch(type)));
+                ApiResponse.of(mapService.fetch(type, maxLatitude, minLatitude, maxLongitude, minLongitude)));
     }
 
     @GetMapping
