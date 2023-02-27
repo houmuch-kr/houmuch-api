@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static kr.co.houmuch.core.util.StreamUtils.map;
+
 @Service
 @RequiredArgsConstructor
 public class MapService{
@@ -94,8 +96,6 @@ public class MapService{
 //        전국 area_code 조회해서
 //        price 와 count 를 알아내면 됨
         List<AreaCodeJpo> areaCodeList = areaCodeJpaRepository.findAllFetchJoin();
-        System.out.println("areaCodeList--------->" + areaCodeList);
-
         for(AreaCodeJpo areaCodeJpo : areaCodeList){
             CombinedAreaCodeJpo combinedAreaCodeJpo = areaCodeJpo.getCode();
             List<ContractJpo> contractJpoList = contractJpaRepository.findByAreaCodeAndTypeNotOrder(
@@ -105,7 +105,6 @@ public class MapService{
                     ContractType.TRADE,
                     Pageable.unpaged()
             );
-            System.out.println("contractJpoList--------->" + contractJpoList);
             // contractJpoList 가 0 인경우는 어떤 경우지?
             if (contractJpoList.size() != 0) {
                 int totalPrice = 0;
@@ -113,11 +112,7 @@ public class MapService{
                 for (ContractJpo contractJpo : contractJpoList) {
                     totalPrice += contractJpo.getDetail().getPrice();
                 }
-                System.out.println("totalPrice---->" + totalPrice);
-                System.out.println("count---->" + count);
-
                 Double price = (totalPrice / count) * 0.0;
-
                 contractSummaryJpaRepository.save(ContractSummaryJpo.builder()
                         .id(areaCodeJpo.getId())
                         .price(price)
@@ -128,10 +123,10 @@ public class MapService{
 
     }
 
-//    public List<AreaContract> fetch(int type) {
     public List<AreaContract> fetch(int type, double maxLatitude, double minLatitude, double maxLongitude, double minLongitude) {
         List<AreaCodeJpo> areaCodeList = areaCodeJpaRepository.findByType(type, maxLatitude, minLatitude, maxLongitude, minLongitude);
-        List<ContractSummaryJpo> contractSummaryList = contractSummaryJpaRepository.findByAreaCode(areaCodeList);
+        List<Long> areaCodes = map(areaCodeList, AreaCodeJpo::getId);
+        List<ContractSummaryJpo> contractSummaryList = contractSummaryJpaRepository.findByAreaCode(areaCodes);
         return contractSummaryList.stream().map(AreaContract::entityOf).collect(Collectors.toList());
     }
 }

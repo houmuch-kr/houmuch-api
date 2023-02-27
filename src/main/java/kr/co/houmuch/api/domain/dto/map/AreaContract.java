@@ -19,8 +19,6 @@ import java.util.List;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class AreaContract {
-		private String code;
-		private String message;
 		private AreaCode areaCode;
 		private Contract contract;
 		private Coordinate coordinate;
@@ -34,8 +32,6 @@ public class AreaContract {
 		public static AreaContract entityOf(ContractSummaryJpo contractSummaryJpo) {
 				AreaContractBuilder builder = builder();
                     builder
-                            .code("0")
-                            .message("성공!")
                             .price(contractSummaryJpo.getPrice())
                             .count(contractSummaryJpo.getCount())
                             .areaCode(AreaCode.entityOf(contractSummaryJpo.getAreaCode()));
@@ -59,8 +55,6 @@ public class AreaContract {
 /* 원하는 형태
 [
   {
-    "code": 0,
-    "message": "정상적으로 처리되었습니다.",
     "data": {
       "id": 1111010100,
       "type": 2,
