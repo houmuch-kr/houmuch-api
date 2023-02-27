@@ -6,8 +6,7 @@ import kr.co.houmuch.core.domain.code.dto.AreaCode;
 import kr.co.houmuch.core.domain.common.dto.CombinedAreaCode;
 import kr.co.houmuch.core.domain.common.dto.Coordinate;
 import kr.co.houmuch.core.domain.contract.dto.Contract;
-import kr.co.houmuch.core.domain.contract.jpa.ContractJpo;
-import kr.co.houmuch.core.domain.contractSummary.jpa.ContractSummaryJpo;
+import kr.co.houmuch.core.domain.contract.jpa.ContractSummaryJpo;
 import lombok.*;
 
 import java.util.List;

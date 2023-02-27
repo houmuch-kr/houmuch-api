@@ -11,7 +11,6 @@ import kr.co.houmuch.api.service.MapService;
 import kr.co.houmuch.api.service.contract.ContractAreaFetchService;
 import kr.co.houmuch.api.service.contract.ContractBuildingFetchService;
 import kr.co.houmuch.api.swagger.SwaggerApiInfo;
-import kr.co.houmuch.core.domain.contractSummary.jpa.ContractSummaryJpo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
