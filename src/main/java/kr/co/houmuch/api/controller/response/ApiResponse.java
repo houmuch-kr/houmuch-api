@@ -14,6 +14,10 @@ public class ApiResponse<T> {
     private String message;
     private T data;
 
+    public static ApiResponse<Void> empty() {
+        return new ApiResponse<>();
+    }
+
     public static <T> ApiResponse<T> of(T data) {
         return new ApiResponse<>(null, null, data);
     }
