@@ -127,46 +127,12 @@ public class MapService{
             }
         }
 
-
-//        List<AreaCodeJpo> _areaCodeList = Arrays.asList(
-//                AreaCodeJpo.builder().id(1100000000L).type(0).build(),
-//                AreaCodeJpo.builder().id(1111000000L).type(1).build(),
-//                AreaCodeJpo.builder().id(1111010100L).type(2).build(),
-//                AreaCodeJpo.builder().id(1114000000L).type(1).build(),
-//                AreaCodeJpo.builder().id(1114010100L).type(2).build()
-//                //   ...
-//        );
-//        for (AreaCodeJpo areaCodeJpo : _areaCodeList) {
-//            CombinedAreaCodeJpo combinedAreaCodeJpo = areaCodeJpo.getCode();
-//            List<ContractJpo> _contractList = contractJpaRepository.findByAreaCode(
-//                    combinedAreaCodeJpo.getSido(),
-//                    combinedAreaCodeJpo.getSgg(),
-//                    combinedAreaCodeJpo.getUmd(),
-//                    Pageable.unpaged());
-//            int _count = _contractList.size();
-//            int _totalPrice = 0;
-//            for (ContractJpo contractJpo : _contractList) {
-//                _totalPrice += contractJpo.getDetail().getPrice();
-//            }
-//            double _price = 0.0 * _totalPrice / _count;
-
-        /**
-         * 효자동 을 검색했을때 효자동 만 나와야 됨 --> 익선동 나오면 안됨
-         * 종로구 를 검색했을때 효자동, 익선동 모두 포함이 되어야 된다
-         * 중구 를 검색했을때 종로구에 포함된 동이 포함되면 안된다
-         * 서울 을 검색했을때 종로구, 중구 모두 포함이 되어야 된다
-         */
     }
 
 //    public List<AreaContract> fetch(int type) {
     public List<AreaContract> fetch(int type, double maxLatitude, double minLatitude, double maxLongitude, double minLongitude) {
-        List<AreaCodeJpo> findByType = areaCodeJpaRepository.findByType(type, maxLatitude, minLatitude, maxLongitude, minLongitude);
-
-        List<AreaContract> areaContractList = new ArrayList<>();
-        List<ContractSummaryJpo> contractSummaryList = contractSummaryJpaRepository.findByAreaCode(findByType);
-
-        areaContractList = contractSummaryList.stream().map(AreaContract::entityOf).collect(Collectors.toList());
-
-        return areaContractList;
+        List<AreaCodeJpo> areaCodeList = areaCodeJpaRepository.findByType(type, maxLatitude, minLatitude, maxLongitude, minLongitude);
+        List<ContractSummaryJpo> contractSummaryList = contractSummaryJpaRepository.findByAreaCode(areaCodeList);
+        return contractSummaryList.stream().map(AreaContract::entityOf).collect(Collectors.toList());
     }
 }
