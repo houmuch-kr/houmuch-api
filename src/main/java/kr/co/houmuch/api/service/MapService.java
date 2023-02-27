@@ -3,6 +3,7 @@ package kr.co.houmuch.api.service;
 import kr.co.houmuch.api.domain.dto.map.AreaContract;
 import kr.co.houmuch.core.domain.code.AreaCodeJpaRepository;
 import kr.co.houmuch.core.domain.code.AreaCodeJpo;
+import kr.co.houmuch.core.domain.code.dto.AreaCode;
 import kr.co.houmuch.core.domain.common.jpa.CombinedAreaCodeJpo;
 import kr.co.houmuch.core.domain.contract.ContractType;
 import kr.co.houmuch.core.domain.contract.jpa.ContractJpaRepository;
@@ -160,10 +161,9 @@ public class MapService{
 //    public List<AreaContract> fetch(int type) {
     public List<AreaContract> fetch(int type, double maxLatitude, double minLatitude, double maxLongitude, double minLongitude) {
         List<AreaCodeJpo> findByType = areaCodeJpaRepository.findByType(type, maxLatitude, minLatitude, maxLongitude, minLongitude);
-        List<Long> areacodeList = findByType.stream().map(AreaCodeJpo::getId).collect(Collectors.toList());
 
         List<AreaContract> areaContractList = new ArrayList<>();
-        List<ContractSummaryJpo> contractSummaryList = contractSummaryJpaRepository.findByAreaCode(areacodeList);
+        List<ContractSummaryJpo> contractSummaryList = contractSummaryJpaRepository.findByAreaCode(findByType);
 
         areaContractList = contractSummaryList.stream().map(AreaContract::entityOf).collect(Collectors.toList());
 
