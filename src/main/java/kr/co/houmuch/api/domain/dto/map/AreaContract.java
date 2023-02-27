@@ -7,6 +7,7 @@ import kr.co.houmuch.core.domain.common.dto.CombinedAreaCode;
 import kr.co.houmuch.core.domain.common.dto.Coordinate;
 import kr.co.houmuch.core.domain.contract.dto.Contract;
 import kr.co.houmuch.core.domain.contract.jpa.ContractJpo;
+import kr.co.houmuch.core.domain.contractSummary.jpa.ContractSummaryJpo;
 import lombok.*;
 
 import java.util.List;
@@ -31,37 +32,27 @@ public class AreaContract {
 		private List<Contract> contracts;
 
 		// 엔티티(JPO)를 Dto로 변경하기 위해 만듦
-		public static AreaContract entityOf(ContractJpo contractJpo) {
-//				System.out.println("areaCodeJpo----->" + areaCodeJpo);
-//				System.out.println("id----->" + areaCodeJpo.getId());
-
+		public static AreaContract entityOf(ContractSummaryJpo contractSummaryJpo) {
 				AreaContractBuilder builder = builder();
-				if (contractJpo.getBuilding() != null) {
-						builder
-										.code("0")
-										.message("성공!")
-										.areaCode(AreaCode.entityOf(contractJpo.getBuilding().getAreaCode()))
-										.contract(Contract.entityOf(contractJpo));
+                    builder
+                            .code("0")
+                            .message("성공!")
+                            .price(contractSummaryJpo.getPrice())
+                            .count(contractSummaryJpo.getCount())
+                            .areaCode(AreaCode.entityOf(contractSummaryJpo.getAreaCode()));
+                    // contract 연결해서 만들어줘야함..! -> contract는 List로 존재하는데 들어가는 것이 맞는가 ?
+//                            .contract(Contract.entityOf(contractSummaryJpo.getAreaCode().getBuildingJpo()));
 
-//						System.out.println("1111 builder----->" + builder);
-
-						if (contractJpo.getBuilding() != null) {
-								builder
-												.coordinate(Coordinate.of(
-																contractJpo.getBuilding().getCoordinate().getCoordinate().getLatitude(),
-																contractJpo.getBuilding().getCoordinate().getCoordinate().getLongitude()));
-						}
-//						System.out.println("2222 builder----->" + builder);
-
-						if (contractJpo.getBuilding().getAreaCode() != null) {
-								builder
-												.combinedAreaCode(CombinedAreaCode.of(
-																contractJpo.getBuilding().getAreaCode().getCode().getSido()
-																, contractJpo.getBuilding().getAreaCode().getCode().getSgg()
-																, contractJpo.getBuilding().getAreaCode().getCode().getUmd()));
-						}
-//						System.out.println("3333 builder----->" + builder);
-				}
+                    if (contractSummaryJpo.getAreaCode() != null) {
+                            builder
+                                    .coordinate(Coordinate.of(
+                                            contractSummaryJpo.getAreaCode().getCoordinate().getCoordinate().getLatitude(),
+                                            contractSummaryJpo.getAreaCode().getCoordinate().getCoordinate().getLongitude()))
+                                    .combinedAreaCode(CombinedAreaCode.of(
+                                                    contractSummaryJpo.getAreaCode().getCode().getSido()
+                                                    , contractSummaryJpo.getAreaCode().getCode().getSgg()
+                                                    , contractSummaryJpo.getAreaCode().getCode().getUmd()));
+                    }
 				return builder.build();
 		}
 }
