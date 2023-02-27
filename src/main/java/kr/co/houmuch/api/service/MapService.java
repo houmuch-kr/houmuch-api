@@ -36,7 +36,7 @@ public class MapService{
         List<ContractSummaryJpo> contractSummaryList = contractMap.entrySet()
                 .stream()
                 .map(entry -> ContractSummaryJpo.builder()
-                        .areaCode(entry.getKey().getId())
+                        .id(entry.getKey().getId())
                         .count(entry.getValue().size())
                         .price(entry.getValue()
                                 .stream()
@@ -66,7 +66,7 @@ public class MapService{
         for (Map.Entry<AreaCodeJpo, List<ContractJpo>> entry : contractMap.entrySet()) {
             if (entry.getValue().isEmpty()) {
                 ContractSummaryJpo contractSummary = ContractSummaryJpo.builder()
-                        .areaCode(entry.getKey().getId())
+                        .id(entry.getKey().getId())
                         .count(0)
                         .price(0.0)
                         .build();
@@ -80,7 +80,7 @@ public class MapService{
             }
             double price = (double) totalPrice / count;
             ContractSummaryJpo contractSummary = ContractSummaryJpo.builder()
-                    .areaCode(entry.getKey().getId())
+                    .id(entry.getKey().getId())
                     .count(count)
                     .price(price)
                     .build();
@@ -119,7 +119,7 @@ public class MapService{
                 Double price = (totalPrice / count) * 0.0;
 
                 contractSummaryJpaRepository.save(ContractSummaryJpo.builder()
-                        .areaCode(areaCodeJpo.getId())
+                        .id(areaCodeJpo.getId())
                         .price(price)
                         .count(count)
                         .build());
@@ -165,9 +165,7 @@ public class MapService{
         List<AreaContract> areaContractList = new ArrayList<>();
         List<ContractSummaryJpo> contractSummaryList = contractSummaryJpaRepository.findByAreaCode(areacodeList);
 
-        // AreaContract 빌더 형태로 만들어 줘야함!!
-//        areaContractList.builder
-
+        areaContractList = contractSummaryList.stream().map(AreaContract::entityOf).collect(Collectors.toList());
 
         return areaContractList;
     }
