@@ -7,6 +7,7 @@ plugins {
 group = 'kr.co.houmuch'
 version = '1.0.0'
 sourceCompatibility = '17'
+ext.profile = (!project.hasProperty('profile') || !profile) ? 'local' : profile
 
 configurations {
     compileOnly {
@@ -16,8 +17,7 @@ configurations {
 
 repositories {
     mavenCentral()
-    mavenLocal()
-    maven {
+    profile.toString() == "local" ? mavenLocal() : maven {
         url = uri("https://maven.pkg.github.com/houmuch-kr/registry")
         credentials {
             username = System.getenv("GITHUB_USERNAME")
