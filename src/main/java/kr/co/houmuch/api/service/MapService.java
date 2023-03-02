@@ -2,6 +2,7 @@ package kr.co.houmuch.api.service;
 
 import kr.co.houmuch.api.domain.dto.contract.AreaSummary;
 import kr.co.houmuch.api.domain.dto.contract.BuildingSummary;
+import kr.co.houmuch.api.domain.dto.contract.Summary;
 import kr.co.houmuch.core.domain.building.dto.Building;
 import kr.co.houmuch.core.domain.building.jpa.BuildingJpaRepository;
 import kr.co.houmuch.core.domain.building.jpa.BuildingJpo;
@@ -18,7 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.geom.Area;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -128,15 +128,18 @@ public class MapService{
         }
     }
 
-    public List<AreaSummary> fetch(int type, double maxLatitude, double minLatitude, double maxLongitude, double minLongitude) {
+    public List<Summary> fetch(int type, double maxLatitude, double minLatitude, double maxLongitude, double minLongitude) {
+        if (type == 3) {
+            return fetchBuilding(maxLatitude, minLatitude, maxLongitude, minLongitude);
+        }
         List<AreaCodeJpo> areaCodeList = areaCodeJpaRepository.findByType(type, maxLatitude, minLatitude, maxLongitude, minLongitude);
         List<Long> areaCodes = map(areaCodeList, AreaCodeJpo::getId);
         List<ContractSummaryJpo> contractSummaryList = contractSummaryJpaRepository.findByAreaCode(areaCodes);
         return contractSummaryList.stream().map(AreaSummary::entityOf).collect(Collectors.toList());
     }
 
-    public List<BuildingSummary> fetchBuilding(int type, double maxLatitude, double minLatitude, double maxLongitude, double minLongitude) {
-        List<ContractJpo> contractJpoList = buildingJpaRepository.findAllByContract(type, maxLatitude, minLatitude, maxLongitude, minLongitude);
+    public List<Summary> fetchBuilding(double maxLatitude, double minLatitude, double maxLongitude, double minLongitude) {
+        List<ContractJpo> contractJpoList = buildingJpaRepository.findAllByContract(maxLatitude, minLatitude, maxLongitude, minLongitude);
 
         Map<BuildingJpo, List<ContractJpo>> buildingMap = contractJpoList
                 .stream()
