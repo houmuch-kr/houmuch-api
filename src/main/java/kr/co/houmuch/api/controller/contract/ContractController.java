@@ -49,8 +49,22 @@ public class ContractController {
             , @RequestParam(defaultValue = "126.0") double minLongitude)
     {
         return ResponseEntity.ok(
-//                ApiResponse.of(mapService.fetch(type)));
                 ApiResponse.of(mapService.fetch(type, maxLatitude, minLatitude, maxLongitude, minLongitude)));
+    }
+    @GetMapping(path = "/fetchBuildingList")
+    @ApiOperation(value = SwaggerApiInfo.GET_AREA_CONTRACT_BUILDING_LIST, notes = SwaggerApiInfo.GET_AREA_CONTRACT_BUILDING_LIST)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "type", required = true, example = "0")
+    })
+    public ResponseEntity<ApiResponse<List<BuildingSummary>>> fetchBuildingList(
+            @RequestParam(name = "type", required = false, defaultValue = "4") int type
+            , @RequestParam(defaultValue = "37.5713") double maxLatitude
+            , @RequestParam(defaultValue = "37.5411") double minLatitude
+            , @RequestParam(defaultValue = "127.0686") double maxLongitude
+            , @RequestParam(defaultValue = "127.0021") double minLongitude)
+    {
+        return ResponseEntity.ok(
+                ApiResponse.of(mapService.fetchBuilding(type, maxLatitude, minLatitude, maxLongitude, minLongitude)));
     }
 
     @GetMapping

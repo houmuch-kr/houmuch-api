@@ -1,6 +1,10 @@
 package kr.co.houmuch.api.service;
 
 import kr.co.houmuch.api.domain.dto.contract.AreaSummary;
+import kr.co.houmuch.api.domain.dto.contract.BuildingSummary;
+import kr.co.houmuch.core.domain.building.dto.Building;
+import kr.co.houmuch.core.domain.building.jpa.BuildingJpaRepository;
+import kr.co.houmuch.core.domain.building.jpa.BuildingJpo;
 import kr.co.houmuch.core.domain.code.AreaCodeJpaRepository;
 import kr.co.houmuch.core.domain.code.AreaCodeJpo;
 import kr.co.houmuch.core.domain.common.jpa.CombinedAreaCodeJpo;
@@ -14,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.geom.Area;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +32,7 @@ import static kr.co.houmuch.core.util.StreamUtils.map;
 public class MapService{
     private final AreaCodeJpaRepository areaCodeJpaRepository;
     private final ContractJpaRepository contractJpaRepository;
+    private final BuildingJpaRepository buildingJpaRepository;
     private final ContractSummaryJpaRepository contractSummaryJpaRepository;
 
     @Transactional
@@ -120,7 +126,6 @@ public class MapService{
                         .build());
             }
         }
-
     }
 
     public List<AreaSummary> fetch(int type, double maxLatitude, double minLatitude, double maxLongitude, double minLongitude) {
@@ -128,5 +133,37 @@ public class MapService{
         List<Long> areaCodes = map(areaCodeList, AreaCodeJpo::getId);
         List<ContractSummaryJpo> contractSummaryList = contractSummaryJpaRepository.findByAreaCode(areaCodes);
         return contractSummaryList.stream().map(AreaSummary::entityOf).collect(Collectors.toList());
+    }
+
+    public List<BuildingSummary> fetchBuilding(int type, double maxLatitude, double minLatitude, double maxLongitude, double minLongitude) {
+        List<ContractJpo> contractJpoList = buildingJpaRepository.findAllByContract(type, maxLatitude, minLatitude, maxLongitude, minLongitude);
+
+        Map<BuildingJpo, List<ContractJpo>> buildingMap = contractJpoList
+                .stream()
+                .collect(Collectors.groupingBy(contractJpo1 -> contractJpo1.getBuilding()));
+        System.out.println("buildingMap---->" + buildingMap);
+        List<BuildingSummary> buildingSummaryList = new ArrayList<>();
+        for(Map.Entry<BuildingJpo, List<ContractJpo>> entry : buildingMap.entrySet()){
+            if(entry.getValue().isEmpty()){
+                buildingSummaryList.add(BuildingSummary.builder()
+                        .building(Building.entityOf(entry.getKey()))
+                        .price(0.0)
+                        .count(0)
+                        .build());
+                continue;
+            }
+            int totalPrice = 0;
+            int count = entry.getValue().size();
+            for(ContractJpo contractJpo : entry.getValue()){
+                totalPrice += contractJpo.getDetail().getPrice();
+            }
+            double price = (double) totalPrice / count;
+            buildingSummaryList.add(BuildingSummary.builder()
+                    .building(Building.entityOf(entry.getKey()))
+                    .price(price)
+                    .count(count)
+                    .build());
+        }
+        return buildingSummaryList;
     }
 }
