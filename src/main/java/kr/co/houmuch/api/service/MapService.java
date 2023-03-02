@@ -145,7 +145,7 @@ public class MapService{
                 .stream()
                 .collect(Collectors.groupingBy(contractJpo1 -> contractJpo1.getBuilding()));
         System.out.println("buildingMap---->" + buildingMap);
-        List<BuildingSummary> buildingSummaryList = new ArrayList<>();
+        List<Summary> buildingSummaryList = new ArrayList<>();
         for(Map.Entry<BuildingJpo, List<ContractJpo>> entry : buildingMap.entrySet()){
             if(entry.getValue().isEmpty()){
                 buildingSummaryList.add(BuildingSummary.builder()
