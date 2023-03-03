@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import kr.co.houmuch.api.controller.response.ApiResponse;
 import kr.co.houmuch.api.domain.dto.contract.*;
-import kr.co.houmuch.api.domain.dto.map.AreaContract;
 import kr.co.houmuch.api.service.MapService;
 import kr.co.houmuch.api.service.contract.ContractAreaFetchService;
 import kr.co.houmuch.api.service.contract.ContractBuildingFetchService;
@@ -41,7 +40,7 @@ public class ContractController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "type", required = true, example = "0")
     })
-    public ResponseEntity<ApiResponse<List<AreaContract>>> fetchList(
+    public ResponseEntity<ApiResponse<List<? extends Summary>>> fetchList(
             @RequestParam(name = "type", required = false, defaultValue = "0") int type
             , @RequestParam(defaultValue = "39.0") double maxLatitude
             , @RequestParam(defaultValue = "37.0") double minLatitude
@@ -49,7 +48,6 @@ public class ContractController {
             , @RequestParam(defaultValue = "126.0") double minLongitude)
     {
         return ResponseEntity.ok(
-//                ApiResponse.of(mapService.fetch(type)));
                 ApiResponse.of(mapService.fetch(type, maxLatitude, minLatitude, maxLongitude, minLongitude)));
     }
 
