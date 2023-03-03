@@ -29,7 +29,7 @@ import static kr.co.houmuch.core.util.StreamUtils.map;
 
 @Service
 @RequiredArgsConstructor
-public class MapService{
+public class ContractSummaryService {
     private final AreaCodeJpaRepository areaCodeJpaRepository;
     private final ContractJpaRepository contractJpaRepository;
     private final BuildingJpaRepository buildingJpaRepository;
