@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import kr.co.houmuch.api.constant.ErrorCode;
 import kr.co.houmuch.api.controller.response.ApiResponse;
 import kr.co.houmuch.api.domain.dto.contract.*;
 import kr.co.houmuch.api.service.ContractSummaryService;
@@ -42,13 +43,16 @@ public class ContractController {
     })
     public ResponseEntity<ApiResponse<List<? extends Summary>>> fetchList(
             @RequestParam(name = "type", required = false, defaultValue = "0") int type
-            , @RequestParam(defaultValue = "37.61") double maxLatitude
-            , @RequestParam(defaultValue = "37.0") double minLatitude
-            , @RequestParam(defaultValue = "126.61") double maxLongitude
-            , @RequestParam(defaultValue = "126.0") double minLongitude)
+            , @RequestParam(defaultValue = "0") double maxLatitude
+            , @RequestParam(defaultValue = "0") double minLatitude
+            , @RequestParam(defaultValue = "0") double maxLongitude
+            , @RequestParam(defaultValue = "0") double minLongitude)
     {
-        return ResponseEntity.ok(
-                ApiResponse.of(contractSummaryService.fetch(type, maxLatitude, minLatitude, maxLongitude, minLongitude)));
+        if(maxLatitude != 0 && minLatitude != 0 && maxLongitude != 0 && minLongitude != 0){
+            return ResponseEntity.ok(
+                    ApiResponse.of(contractSummaryService.fetch(type, maxLatitude, minLatitude, maxLongitude, minLongitude)));
+    }
+        return ResponseEntity.ok(ApiResponse.failure(ErrorCode.CODE_C1000));
     }
 
     @GetMapping
