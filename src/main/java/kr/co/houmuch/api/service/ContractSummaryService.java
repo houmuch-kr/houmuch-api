@@ -82,7 +82,7 @@ public class ContractSummaryService {
         }
     }
 
-    public List<Summary> fetch(int type, double maxLatitude, double minLatitude, double maxLongitude, double minLongitude) {
+    public List<? extends Summary> fetch(int type, double maxLatitude, double minLatitude, double maxLongitude, double minLongitude) {
         if (type == 3) {
             return fetchBuilding(maxLatitude, minLatitude, maxLongitude, minLongitude);
         }
@@ -92,14 +92,14 @@ public class ContractSummaryService {
         return contractSummaryList.stream().map(AreaSummary::entityOf).collect(Collectors.toList());
     }
 
-    public List<Summary> fetchBuilding(double maxLatitude, double minLatitude, double maxLongitude, double minLongitude) {
+    public List<? extends Summary> fetchBuilding(double maxLatitude, double minLatitude, double maxLongitude, double minLongitude) {
         List<ContractJpo> contractJpoList = buildingJpaRepository.findAllByContract(maxLatitude, minLatitude, maxLongitude, minLongitude);
         Map<BuildingJpo, List<ContractJpo>> buildingMap = contractJpoList
                 .stream()
                 .collect(Collectors.groupingBy(contractJpo1 -> contractJpo1.getBuilding()));
-        List<Summary> buildingSummaryList = buildingMap.entrySet()
+        List<BuildingSummary> buildingSummaryList = buildingMap.entrySet()
                     .stream()
-                    .map(entry -> BuildingSummary.builder()
+                    .map(entry -> (BuildingSummary) BuildingSummary.builder()
                             .building(Building.entityOf(entry.getKey()))
                             .count(entry.getValue().size())
                             .price(entry.getValue()
@@ -108,7 +108,7 @@ public class ContractSummaryService {
                                     .average()
                                     .orElse(0))
                             .build())
-                .collect(Collectors.toList());
+                .toList();
         return buildingSummaryList;
     }
 }
