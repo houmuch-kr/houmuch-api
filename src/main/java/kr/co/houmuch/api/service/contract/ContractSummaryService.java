@@ -1,4 +1,4 @@
-package kr.co.houmuch.api.service;
+package kr.co.houmuch.api.service.contract;
 
 import kr.co.houmuch.api.domain.dto.contract.AreaSummary;
 import kr.co.houmuch.api.domain.dto.contract.BuildingSummary;
