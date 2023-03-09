@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiOperation;
 import kr.co.houmuch.api.constant.ErrorCode;
 import kr.co.houmuch.api.controller.response.ApiResponse;
 import kr.co.houmuch.api.domain.dto.contract.*;
-import kr.co.houmuch.api.service.ContractSummaryService;
+import kr.co.houmuch.api.service.contract.ContractSummaryService;
 import kr.co.houmuch.api.service.contract.ContractAreaFetchService;
 import kr.co.houmuch.api.service.contract.ContractBuildingFetchService;
 import kr.co.houmuch.api.swagger.SwaggerApiInfo;
