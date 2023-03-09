@@ -1,4 +1,4 @@
-package kr.co.houmuch.api.controller.contract;
+package kr.co.houmuch.api.controller.search;
 
 import io.swagger.annotations.*;
 import kr.co.houmuch.api.controller.response.ApiResponse;
