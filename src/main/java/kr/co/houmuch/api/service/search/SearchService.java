@@ -14,12 +14,11 @@ import java.util.List;
 public class SearchService {
     private final BuildingJpaRepository buildingJpaRepository;
     public List<String> searchList(String keyword, Pageable pageable){
-        List<String> buildingNameList = new ArrayList<>();
         List<BuildingJpo> searchList = buildingJpaRepository.findByName(keyword, pageable);
-        for(BuildingJpo buildingName : searchList){
-            String name = buildingName.getName();
-            buildingNameList.add(name);
-        }
+        List<String> buildingNameList = searchList
+                .stream()
+                .map(buildingJpo -> buildingJpo.getName())
+                .toList();
         return buildingNameList;
     }
 }

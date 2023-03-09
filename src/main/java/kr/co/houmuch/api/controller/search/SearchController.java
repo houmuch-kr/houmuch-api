@@ -1,4 +1,4 @@
-package kr.co.houmuch.api.controller.contract;
+package kr.co.houmuch.api.controller.search;
 
 import io.swagger.annotations.*;
 import kr.co.houmuch.api.controller.response.ApiResponse;
@@ -24,7 +24,7 @@ public class SearchController {
     private final SearchService searchService;
     @GetMapping
     @ApiOperation(value = SwaggerApiInfo.GET_SEARCH_LIST, notes = SwaggerApiInfo.GET_SEARCH_LIST)
-    @ApiImplicitParams({@ApiImplicitParam(name = "searchWord", required = true, example = "한강")})
+    @ApiImplicitParams({@ApiImplicitParam(name = "keyword", required = true, example = "한강")})
     public ResponseEntity<ApiResponse<List<String> >> searchList(
             @RequestParam(name = "keyword", required = true, defaultValue = "한강") String keyword
             , @PageableDefault(size = 10) Pageable pageable
