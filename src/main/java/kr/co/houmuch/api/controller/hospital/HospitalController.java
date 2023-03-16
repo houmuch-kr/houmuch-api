@@ -9,10 +9,7 @@ import kr.co.houmuch.api.swagger.SwaggerApiInfo;
 import kr.co.houmuch.core.domain.hospital.dto.Hospital;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping(path = "/v1/hospital")
 @Api(tags = SwaggerApiInfo.HOSPITAL)
+@CrossOrigin
 public class HospitalController {
     private final HospitalService hospitalService;
 
