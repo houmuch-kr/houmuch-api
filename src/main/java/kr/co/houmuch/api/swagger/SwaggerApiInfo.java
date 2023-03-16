@@ -9,4 +9,6 @@ public class SwaggerApiInfo {
     public static final String GET_AREA_CONTRACT_LIST = "type별 지역 거래(지역/총거래량/평균거래량 리스트)";
     public static final String SEARCH = "SEARCH 관련 API";
     public static final String GET_SEARCH_LIST = "연관 검색어 리스트";
+    public static final String HOSPITAL = "HOSPITAL 관련 API";
+    public static final String GET_HOSPITAL_LIST = "좌표값에 따른 병원 리스트";
 }

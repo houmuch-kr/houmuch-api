@@ -1,0 +1,37 @@
+package kr.co.houmuch.api.controller.hospital;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import kr.co.houmuch.api.service.hospital.HospitalService;
+import kr.co.houmuch.api.swagger.SwaggerApiInfo;
+import kr.co.houmuch.core.domain.hospital.dto.Hospital;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping(path = "/v1/hospital")
+@Api(tags = SwaggerApiInfo.HOSPITAL)
+public class HospitalController {
+    private final HospitalService hospitalService;
+
+    @GetMapping
+    @ApiOperation(value = SwaggerApiInfo.GET_HOSPITAL_LIST, notes = SwaggerApiInfo.GET_HOSPITAL_LIST)
+    public List<Hospital> hospitalFetchList(
+//            @RequestParam(defaultValue = "0") double maxLatitude
+//            , @RequestParam(defaultValue = "0") double minLatitude
+//            , @RequestParam(defaultValue = "0") double maxLongitude
+//            , @RequestParam(defaultValue = "0") double minLongitude
+            @RequestParam(defaultValue = "37.61") double maxLatitude
+            , @RequestParam(defaultValue = "37.0") double minLatitude
+            , @RequestParam(defaultValue = "126.61") double maxLongitude
+            , @RequestParam(defaultValue = "126.0") double minLongitude
+    ){
+        return hospitalService.fetch(maxLatitude, minLatitude, maxLongitude, minLongitude);
+    }
+}
