@@ -11,4 +11,8 @@ public class SwaggerApiInfo {
     public static final String GET_SEARCH_LIST = "연관 검색어 리스트";
     public static final String HOSPITAL = "HOSPITAL 관련 API";
     public static final String GET_HOSPITAL_LIST = "좌표값에 따른 병원 리스트";
+    public static final String STORE = "STORE 관련 API";
+    //public static final String ?? ="상점 정보 캐싱"
+    public static final String GET_STORE_LIST = "좌표값에 따른 상점 리스트";
+
 }
