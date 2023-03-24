@@ -18,25 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class StoreController {
     private final StoreService storeService;
     private final NaverMapApiClient naverMapApiClient;
-
-    @GetMapping(path = "/process/index")
+    @GetMapping
     //@ApiOperation(value = SwaggerApiInfo., notes = SwaggerApiInfo.)
-    public ResponseEntity<ApiResponse<Void>> processIndex() {
-        storeService.index();
-
-//            naverMapApiClient.fetchGeocode("서울특별시 종로구 익선동").subscribe(v->{
-//                System.out.println("v-->"+v);
-//            });
-        return ResponseEntity
-                .accepted()
-                .body(ApiResponse.empty());
-    }
-
-//    @GetMapping
-//    public ResponseEntity<ApiResponse<T>> getStore(){
+    public ResponseEntity<ApiResponse<Void>> get() {
+        storeService.fetch();
 //        return ResponseEntity.ok(
-//                ApiResponse.of(storeService.fetchStore()));
-//    }
-
-
+//                ApiResponse.of(storeService.fetch()));
+        return null;
+    }
 }
